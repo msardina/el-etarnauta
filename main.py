@@ -8,16 +8,27 @@ pygame.init()
 mixer.init()
 
 # setup a screen
-WIDTH, HEIGHT = 1200, 800
+WIDTH, HEIGHT = 800, 800
 SCREEN = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("El Eternauta")
 
+# clock
+clock = pygame.time.Clock()
+FPS = 60
+
 # images
 
-snow_imgs = []
+ground_decorations = []
 
 for img in range(1, 6):
-    snow_imgs.append(pygame.image.load(os.path.join("assets", f"snow{img}.png")))
+    ground_decorations.append(
+        pygame.image.load(os.path.join("assets", f"snow{img}.png"))
+    )
+
+for img in range(1, 3):
+    ground_decorations.append(
+        pygame.image.load(os.path.join("assets", f"bush{img}.png"))
+    )
 
 
 # classes
@@ -30,7 +41,7 @@ class Player:
         self.img = img
         self.width = 50  # self.img.get_width()
         self.height = 100  # self.img.get_height()
-        self.speed = 1
+        self.speed = 3
         self.rect = pygame.Rect(self.x, self.y, self.width, self.height)
 
     def draw(self):
@@ -52,7 +63,7 @@ class Player:
         self.rect = pygame.Rect(self.x, self.y, self.width, self.height)
 
 
-class Ground_Snow:
+class Ground_Decoration:
 
     def __init__(self, x, y, img):
         self.x = x
@@ -65,26 +76,33 @@ class Ground_Snow:
         SCREEN.blit(self.img, (self.x, self.y))
 
     def move(self):
-        self.y += 0.50
+        self.y += 1
 
         if self.y > HEIGHT:
             self.y = 0 - 200
             self.x = random.randint(0, WIDTH - self.width)
 
 
-def create_snow():
-    ground_snow = []
+def create_decorations():
+    decorations = []
 
-    for snow_num in range(1, 6):
-        ground_snow.append(
-            Ground_Snow(
+    for decoration_num in range(1, len(ground_decorations)):
+        decorations.append(
+            Ground_Decoration(
                 random.randint(0, WIDTH),
-                0 - (snow_num * 200) * -1,
-                snow_imgs[snow_num - 1],
+                0 - (decoration_num * 200) * -1,
+                ground_decorations[decoration_num - 1],
             )
         )
 
-    return ground_snow
+    return decorations
+
+
+def do_decorations(decorations):
+
+    for decoration in decorations:
+        decoration.draw()
+        decoration.move()
 
 
 def game():
@@ -94,7 +112,7 @@ def game():
 
     # create objects
     player = Player(WIDTH // 2, HEIGHT // 2, None)
-    ground_snow = create_snow()
+    decorations = create_decorations()
 
     # main loop
     while run:
@@ -111,10 +129,7 @@ def game():
         # draw
         SCREEN.fill("white")
 
-        for snow in ground_snow:
-            snow.draw()
-            snow.move()
-
+        do_decorations()
         player.draw()
 
         # move
@@ -122,6 +137,7 @@ def game():
 
         # update
         pygame.display.update()
+        clock.tick(FPS)
 
 
 # run if file is main
