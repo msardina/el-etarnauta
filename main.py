@@ -98,13 +98,6 @@ def create_decorations():
     return decorations
 
 
-def do_decorations(decorations):
-
-    for decoration in decorations:
-        decoration.draw()
-        decoration.move()
-
-
 def game():
 
     # variables
@@ -129,8 +122,15 @@ def game():
         # draw
         SCREEN.fill("white")
 
-        do_decorations()
-        player.draw()
+        for decoration in decorations:
+            if decoration.y + decoration.height > player.y + player.height:
+                player.draw()  # draw player before if infront of decoration
+                decoration.draw()
+                decoration.move()
+            else:
+                decoration.draw()
+                decoration.move()
+                player.draw()  # draw player after if behind decaration
 
         # move
         player.move(pygame.key.get_pressed())
