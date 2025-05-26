@@ -21,14 +21,20 @@ FPS = 60
 ground_decorations = []
 
 for img in range(1, 6):
-    ground_decorations.append(
-        pygame.image.load(os.path.join("assets", f"snow{img}.png"))
+    image = pygame.image.load(os.path.join("assets", f"snow{img}.png"))
+    scale_image = pygame.transform.scale(
+        image, (image.get_width() * 3, image.get_height() * 3)
     )
 
+    ground_decorations.append(scale_image)
+
 for img in range(1, 3):
-    ground_decorations.append(
-        pygame.image.load(os.path.join("assets", f"bush{img}.png"))
+    image = pygame.image.load(os.path.join("assets", f"bush{img}.png"))
+    scale_image = pygame.transform.scale(
+        image, (image.get_width() * 3, image.get_height() * 3)
     )
+
+    ground_decorations.append(scale_image)
 
 
 # classes
@@ -58,6 +64,8 @@ class Player:
             self.y += self.speed
         if keys[pygame.K_UP]:
             self.y -= self.speed
+        else:
+            self.y += 1
 
         # update rect
         self.rect = pygame.Rect(self.x, self.y, self.width, self.height)
