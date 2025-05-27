@@ -17,7 +17,7 @@ clock = pygame.time.Clock()
 FPS = 60
 
 # images
-
+juan_img = pygame.image.load(os.path.join("assets", f"juan.png"))
 ground_decorations = []
 
 for img in range(1, 6):
@@ -45,13 +45,14 @@ class Player:
         self.y = y
         self.color = (160, 32, 240)
         self.img = img
-        self.width = 50  # self.img.get_width()
-        self.height = 100  # self.img.get_height()
+        self.width = self.img.get_width()
+        self.height = self.img.get_height() / 2 + 20
         self.speed = 3
         self.rect = pygame.Rect(self.x, self.y, self.width, self.height)
 
     def draw(self):
-        pygame.draw.rect(SCREEN, self.color, self.rect)
+
+        SCREEN.blit(self.img, (self.x, self.y))
 
     def move(self, keys):
 
@@ -65,7 +66,7 @@ class Player:
         if keys[pygame.K_UP]:
             self.y -= self.speed
         else:
-            self.y += 1
+            self.y -= 1
 
         # update rect
         self.rect = pygame.Rect(self.x, self.y, self.width, self.height)
@@ -81,13 +82,14 @@ class Ground_Decoration:
         self.height = self.img.get_height()
 
     def draw(self):
+
         SCREEN.blit(self.img, (self.x, self.y))
 
     def move(self):
-        self.y += 1
+        self.y -= 1
 
-        if self.y > HEIGHT:
-            self.y = 0 - 200
+        if self.y < 0 - self.height:
+            self.y = HEIGHT + 200
             self.x = random.randint(0, WIDTH - self.width)
 
 
@@ -112,7 +114,7 @@ def game():
     run = True
 
     # create objects
-    player = Player(WIDTH // 2, HEIGHT // 2, None)
+    player = Player(WIDTH // 2, HEIGHT // 2, juan_img)
     decorations = create_decorations()
 
     # main loop
