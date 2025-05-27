@@ -48,6 +48,7 @@ class Player:
         self.width = self.img.get_width()
         self.height = self.img.get_height() / 2 + 20
         self.speed = 3
+        self.is_firing = False
         self.rect = pygame.Rect(self.x, self.y, self.width, self.height)
 
     def draw(self):
@@ -70,6 +71,40 @@ class Player:
 
         # update rect
         self.rect = pygame.Rect(self.x, self.y, self.width, self.height)
+
+    def is_fire(self, keys):
+
+        if keys[pygame.K_SPACE] and not self.is_firing:
+            self.is_firing = True
+            return True
+
+        if not keys[pygame.K_SPACE]:
+            self.is_firing = False
+
+        return False
+
+
+class Bullet:
+
+    def __init__(self, x, y):
+        self.x = x
+        self.y = y
+        self.width = 10
+        self.height = 15
+        self.rect = pygame.Rect(self.x, self.y, self.width, self.height)
+
+    def draw(self):
+        pygame.draw.rect(SCREEN, (0, 0, 0), self.rect)
+
+    def move(self):
+        self.y += 20
+        self.rect = pygame.Rect(self.x, self.y, self.width, self.height)
+
+    def is_offscreen(self):
+
+        if self.y > HEIGHT:
+            return True
+        return False
 
 
 class Ground_Decoration:
@@ -116,6 +151,7 @@ def game():
     # create objects
     player = Player(WIDTH // 2, HEIGHT // 2, juan_img)
     decorations = create_decorations()
+    bullets = []
 
     # main loop
     while run:
@@ -142,12 +178,32 @@ def game():
                 decoration.move()
                 player.draw()  # draw player after if behind decaration
 
+        # fire bulets
+
+        if player.is_fire(pygame.key.get_pressed()):
+            bullets.append(
+                Bullet(player.x + player.width // 2 - 6, player.y + player.height)
+            )
+
+        # move bullets
+
+        if len(bullets) > 0:
+
+            for bullet in bullets:
+                bullet.draw()
+                bullet.move()
+
+                if bullet.is_offscreen():
+                    bullets.remove(bullet)
+
         # move
         player.move(pygame.key.get_pressed())
 
         # update
         pygame.display.update()
         clock.tick(FPS)
+
+        print(player.is_firing)
 
 
 # run if file is main
