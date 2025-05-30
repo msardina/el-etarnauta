@@ -16,6 +16,10 @@ pygame.display.set_caption("El Eternauta")
 clock = pygame.time.Clock()
 FPS = 60
 
+# music
+
+shot_gun = pygame.mixer.Sound(os.path.join("sounds", "shotgun.wav"))
+
 # images
 juan_img = pygame.image.load(os.path.join("assets", f"juan.png"))
 ground_decorations = []
@@ -75,12 +79,14 @@ class Player:
     def is_fire(self, keys):
 
         if keys[pygame.K_SPACE] and not self.is_firing:
+            shot_gun.play()
             self.is_firing = True
             self.speed = 2
             return True
 
         if not keys[pygame.K_SPACE]:
             self.speed = 3
+
             self.is_firing = False
 
         return False
@@ -204,8 +210,6 @@ def game():
         # update
         pygame.display.update()
         clock.tick(FPS)
-
-        print(player.is_firing)
 
 
 # run if file is main
