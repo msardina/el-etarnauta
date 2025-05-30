@@ -16,12 +16,16 @@ pygame.display.set_caption("El Eternauta")
 clock = pygame.time.Clock()
 FPS = 60
 
+# const
+SCREEN_SPEED = 1
+
 # music
 
 shot_gun = pygame.mixer.Sound(os.path.join("sounds", "shotgun.wav"))
 
 # images
 juan_img = pygame.image.load(os.path.join("assets", f"juan.png"))
+bug_img = pygame.image.load(os.path.join("assets", f"spider.png"))
 ground_decorations = []
 
 for img in range(1, 6):
@@ -42,6 +46,60 @@ for img in range(1, 3):
 
 
 # classes
+
+
+class Bug:
+
+    def __init__(self, x, y, img):
+        self.x = x
+        self.y = y
+        self.img = img
+        self.width = self.img.get_width()
+        self.height = self.img.get_height()
+        self.rect = pygame.Rect(self.x, self.y, self.width, self.height)
+        self.lives = 5
+
+    def draw(self):
+        SCREEN.blit(self.img, (self.x, self.y))
+
+    def move(self, playerx, playery):
+        self.y -= SCREEN_SPEED
+        self.rect = pygame.Rect(self.x, self.y, self.width, self.height)
+        print(self.y)
+
+        if self.y > playery:
+            if random.randint(1, 5) == 1:
+                self.y -= 3
+
+        if self.y < playery:
+            if random.randint(1, 5) == 1:
+                self.y += 3
+
+        if self.x > playerx:
+            if random.randint(1, 5) == 1:
+                self.x -= 3
+
+        if self.x < playerx:
+            if random.randint(1, 5) == 1:
+                self.x += 3
+
+    def is_offscreen(self):
+
+        if self.y < 0 - self.height:
+            return True
+        return False
+
+    def hit(self):
+
+        self.lives -= 1
+
+        if self.lives == 0:
+            self.x = random.randint(0, WIDTH)
+            self.y = HEIGHT + 200
+            self.rect = pygame.Rect(self.x, self.y, self.width, self.height)
+            self.lives = 5
+
+
 class Player:
 
     def __init__(self, x, y, img):
@@ -71,7 +129,7 @@ class Player:
         if keys[pygame.K_UP]:
             self.y -= self.speed
         else:
-            self.y -= 1
+            self.y -= SCREEN_SPEED
 
         # update rect
         self.rect = pygame.Rect(self.x, self.y, self.width, self.height)
@@ -114,6 +172,12 @@ class Bullet:
             return True
         return False
 
+    def collide_bug(self, bugrect):
+
+        if pygame.Rect.colliderect(self.rect, bugrect):
+            return True
+        return False
+
 
 class Ground_Decoration:
 
@@ -129,7 +193,7 @@ class Ground_Decoration:
         SCREEN.blit(self.img, (self.x, self.y))
 
     def move(self):
-        self.y -= 1
+        self.y -= SCREEN_SPEED
 
         if self.y < 0 - self.height:
             self.y = HEIGHT + 200
@@ -160,6 +224,7 @@ def game():
     player = Player(WIDTH // 2, HEIGHT // 2, juan_img)
     decorations = create_decorations()
     bullets = []
+    spider = Bug(random.randint(0, WIDTH), HEIGHT, bug_img)
 
     # main loop
     while run:
@@ -186,6 +251,8 @@ def game():
                 decoration.move()
                 player.draw()  # draw player after if behind decaration
 
+        spider.draw()
+
         # fire bulets
 
         if player.is_fire(pygame.key.get_pressed()):
@@ -201,11 +268,22 @@ def game():
                 bullet.draw()
                 bullet.move()
 
+                if bullet.collide_bug(spider.rect):
+                    spider.hit()
+                    bullets.remove(bullet)
+
                 if bullet.is_offscreen():
                     bullets.remove(bullet)
 
         # move
         player.move(pygame.key.get_pressed())
+        spider.move(player.x, player.y)
+
+        # check if spider off screen
+
+        if spider.is_offscreen():
+            spider.y = HEIGHT + 200
+            spider.x = random.randint(0, WIDTH)
 
         # update
         pygame.display.update()
