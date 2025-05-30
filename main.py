@@ -76,9 +76,11 @@ class Player:
 
         if keys[pygame.K_SPACE] and not self.is_firing:
             self.is_firing = True
+            self.speed = 2
             return True
 
         if not keys[pygame.K_SPACE]:
+            self.speed = 3
             self.is_firing = False
 
         return False
