@@ -26,6 +26,7 @@ shot_gun = pygame.mixer.Sound(os.path.join("sounds", "shotgun.wav"))
 # images
 juan_img = pygame.image.load(os.path.join("assets", f"juan.png"))
 bug_img = pygame.image.load(os.path.join("assets", f"spider.png"))
+blood_bug_img = pygame.image.load(os.path.join("assets", f"blood spider.png"))
 ground_decorations = []
 
 for img in range(1, 6):
@@ -50,10 +51,13 @@ for img in range(1, 3):
 
 class Bug:
 
-    def __init__(self, x, y, img):
+    def __init__(self, x, y, normalimg, bloodimg):
         self.x = x
         self.y = y
-        self.img = img
+        self.normalimg = normalimg
+        self.bloodimg = bloodimg
+        self.img = self.normalimg
+
         self.width = self.img.get_width()
         self.height = self.img.get_height()
         self.rect = pygame.Rect(self.x, self.y, self.width, self.height)
@@ -65,7 +69,6 @@ class Bug:
     def move(self, playerx, playery):
         self.y -= SCREEN_SPEED
         self.rect = pygame.Rect(self.x, self.y, self.width, self.height)
-        print(self.y)
 
         if self.y > playery:
             if random.randint(1, 5) == 1:
@@ -92,6 +95,7 @@ class Bug:
     def hit(self):
 
         self.lives -= 1
+        self.img = self.bloodimg
 
         if self.lives == 0:
             self.x = random.randint(0, WIDTH)
@@ -219,12 +223,13 @@ def game():
 
     # variables
     run = True
+    blood_timer = 0
 
     # create objects
     player = Player(WIDTH // 2, HEIGHT // 2, juan_img)
     decorations = create_decorations()
     bullets = []
-    spider = Bug(random.randint(0, WIDTH), HEIGHT, bug_img)
+    spider = Bug(random.randint(0, WIDTH), HEIGHT, bug_img, blood_bug_img)
 
     # main loop
     while run:
@@ -274,6 +279,13 @@ def game():
 
                 if bullet.is_offscreen():
                     bullets.remove(bullet)
+
+        # update blood timer
+        blood_timer += 0.20
+
+        if blood_timer == 1:
+            spider.img = spider.normalimg
+            blood_timer = 0
 
         # move
         player.move(pygame.key.get_pressed())
