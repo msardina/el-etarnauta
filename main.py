@@ -12,6 +12,12 @@ mixer.init()
 clock = pygame.time.Clock()
 FPS = 60
 
+
+# setup font
+font = pygame.font.SysFont(None, 50)
+title_font = pygame.font.SysFont(None, 100)
+medium_font = pygame.font.SysFont(None, 75)
+
 # const
 SCREEN_SPEED = 1
 
@@ -227,6 +233,7 @@ def game():
     # variables
     run = True
     blood_timer = 0
+    score = 0
 
     # create objects
     player = Player(WIDTH // 2, HEIGHT // 2, juan_img)
@@ -285,7 +292,11 @@ def game():
                 for spider in spiders:
                     if bullet.collide_bug(spider.rect):
                         spider.hit()
-                        bullets.remove(bullet)
+
+                        score += 1
+
+                        if bullet in bullets:
+                            bullets.remove(bullet)
                         break
 
                     elif bullet.is_offscreen():
@@ -321,6 +332,14 @@ def game():
             spiders.append(
                 Bug(random.randint(0, WIDTH), HEIGHT, bug_img, blood_bug_img)
             )
+
+        #### draw score ####
+
+        # render text
+        score_txt = title_font.render(f"{score}", True, (0, 0, 0))
+
+        # draw score
+        SCREEN.blit(score_txt, (WIDTH // 2 - score_txt.get_width() // 2, 20))
 
         # update
         pygame.display.update()
