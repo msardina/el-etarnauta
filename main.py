@@ -7,10 +7,6 @@ import os
 pygame.init()
 mixer.init()
 
-# setup a screen
-WIDTH, HEIGHT = 800, 800
-SCREEN = pygame.display.set_mode((WIDTH, HEIGHT))
-pygame.display.set_caption("El Eternauta")
 
 # clock
 clock = pygame.time.Clock()
@@ -28,6 +24,7 @@ juan_img = pygame.image.load(os.path.join("assets", f"juan.png"))
 bug_img = pygame.image.load(os.path.join("assets", f"spider.png"))
 blood_bug_img = pygame.image.load(os.path.join("assets", f"blood spider.png"))
 ground_decorations = []
+train_tracks = pygame.image.load(os.path.join("assets", "train.png"))
 
 for img in range(1, 6):
     image = pygame.image.load(os.path.join("assets", f"snow{img}.png"))
@@ -45,6 +42,10 @@ for img in range(1, 3):
 
     ground_decorations.append(scale_image)
 
+# setup a screen
+WIDTH, HEIGHT = 800, train_tracks.get_height()
+SCREEN = pygame.display.set_mode((WIDTH, HEIGHT))
+pygame.display.set_caption("El Eternauta")
 
 # classes
 
@@ -196,12 +197,14 @@ class Ground_Decoration:
 
         SCREEN.blit(self.img, (self.x, self.y))
 
-    def move(self):
+    def move(self, reset, randomise_pos):
         self.y -= SCREEN_SPEED
 
         if self.y < 0 - self.height:
-            self.y = HEIGHT + 200
-            self.x = random.randint(0, WIDTH - self.width)
+            self.y = HEIGHT + reset
+
+            if randomise_pos:
+                self.x = random.randint(0, WIDTH - self.width)
 
 
 def create_decorations():
@@ -229,7 +232,9 @@ def game():
     player = Player(WIDTH // 2, HEIGHT // 2, juan_img)
     decorations = create_decorations()
     bullets = []
-    spider = Bug(random.randint(0, WIDTH), HEIGHT, bug_img, blood_bug_img)
+    spiders = [Bug(random.randint(0, WIDTH), HEIGHT, bug_img, blood_bug_img)]
+    train = Ground_Decoration(100, 0, train_tracks)
+    train2 = Ground_Decoration(100, HEIGHT, train_tracks)
 
     # main loop
     while run:
@@ -246,17 +251,21 @@ def game():
         # draw
         SCREEN.fill("white")
 
+        train.draw()
+        train2.draw()
+
         for decoration in decorations:
             if decoration.y + decoration.height > player.y + player.height:
                 player.draw()  # draw player before if infront of decoration
                 decoration.draw()
-                decoration.move()
+                decoration.move(200, True)
             else:
                 decoration.draw()
-                decoration.move()
+                decoration.move(200, True)
                 player.draw()  # draw player after if behind decaration
 
-        spider.draw()
+        for spider in spiders:
+            spider.draw()
 
         # fire bulets
 
@@ -273,29 +282,45 @@ def game():
                 bullet.draw()
                 bullet.move()
 
-                if bullet.collide_bug(spider.rect):
-                    spider.hit()
-                    bullets.remove(bullet)
+                for spider in spiders:
+                    if bullet.collide_bug(spider.rect):
+                        spider.hit()
+                        bullets.remove(bullet)
+                        break
 
-                if bullet.is_offscreen():
-                    bullets.remove(bullet)
+                    elif bullet.is_offscreen():
+                        if bullet in bullets:
+                            bullets.remove(bullet)
 
         # update blood timer
         blood_timer += 0.20
 
         if blood_timer == 1:
-            spider.img = spider.normalimg
+            for spider in spiders:
+                spider.img = spider.normalimg
             blood_timer = 0
 
         # move
         player.move(pygame.key.get_pressed())
-        spider.move(player.x, player.y)
+
+        for spider in spiders:
+            spider.move(player.x, player.y)
+        train.move(0, False)
+        train2.move(0, False)
 
         # check if spider off screen
 
-        if spider.is_offscreen():
-            spider.y = HEIGHT + 200
-            spider.x = random.randint(0, WIDTH)
+        for spider in spiders:
+            if spider.is_offscreen():
+                spider.y = HEIGHT + 200
+                spider.x = random.randint(0, WIDTH)
+
+        # add spiders
+
+        if random.randint(1, 1200) == 120:
+            spiders.append(
+                Bug(random.randint(0, WIDTH), HEIGHT, bug_img, blood_bug_img)
+            )
 
         # update
         pygame.display.update()
