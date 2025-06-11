@@ -110,6 +110,12 @@ class Bug:
             self.rect = pygame.Rect(self.x, self.y, self.width, self.height)
             self.lives = 5
 
+    def collide(self, playerrect):
+
+        if pygame.Rect.colliderect(self.rect, playerrect):
+            return True
+        return False
+
 
 class Player:
 
@@ -316,6 +322,11 @@ def game():
 
         for spider in spiders:
             spider.move(player.x, player.y)
+
+            if spider.collide(player.rect):
+                spider.y = HEIGHT + 200
+                spider.x = random.randint(0, WIDTH)
+
         train.move(0, False)
         train2.move(0, False)
 
