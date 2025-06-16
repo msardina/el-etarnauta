@@ -29,6 +29,7 @@ shot_gun = pygame.mixer.Sound(os.path.join("sounds", "shotgun.wav"))
 juan_img = pygame.image.load(os.path.join("assets", f"juan.png"))
 bug_img = pygame.image.load(os.path.join("assets", f"spider.png"))
 blood_bug_img = pygame.image.load(os.path.join("assets", f"blood spider.png"))
+heart_img = pygame.image.load(os.path.join("assets", f"life.png"))
 ground_decorations = []
 train_tracks = pygame.image.load(os.path.join("assets", "train.png"))
 
@@ -128,6 +129,7 @@ class Player:
         self.height = self.img.get_height() / 2 + 20
         self.speed = 3
         self.is_firing = False
+        self.lives = 3
         self.rect = pygame.Rect(self.x, self.y, self.width, self.height)
 
     def draw(self):
@@ -196,6 +198,19 @@ class Bullet:
         return False
 
 
+class Lives:
+
+    def __init__(self, x, y, img):
+        self.x = x
+        self.y = y
+        self.img = img
+
+    def draw(self, liveamount):
+
+        for i in range(1, liveamount + 1):
+            SCREEN.blit(self.img, (self.x * (i * 2), self.y))
+
+
 class Ground_Decoration:
 
     def __init__(self, x, y, img):
@@ -248,6 +263,7 @@ def game():
     spiders = [Bug(random.randint(0, WIDTH), HEIGHT, bug_img, blood_bug_img)]
     train = Ground_Decoration(100, 0, train_tracks)
     train2 = Ground_Decoration(100, HEIGHT, train_tracks)
+    lives = Lives(30, 20, heart_img)
 
     # main loop
     while run:
@@ -326,6 +342,7 @@ def game():
             if spider.collide(player.rect):
                 spider.y = HEIGHT + 200
                 spider.x = random.randint(0, WIDTH)
+                player.lives -= 1
 
         train.move(0, False)
         train2.move(0, False)
@@ -351,6 +368,15 @@ def game():
 
         # draw score
         SCREEN.blit(score_txt, (WIDTH // 2 - score_txt.get_width() // 2, 20))
+
+        # check for game ending
+
+        if player.lives == 0:
+            run = False
+
+        # draw lives
+
+        lives.draw(player.lives)
 
         # update
         pygame.display.update()
