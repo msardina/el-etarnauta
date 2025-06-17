@@ -50,7 +50,7 @@ for img in range(1, 3):
     ground_decorations.append(scale_image)
 
 # setup a screen
-WIDTH, HEIGHT = 800, train_tracks.get_height()
+WIDTH, HEIGHT = 800, train_tracks.get_height() - 2
 SCREEN = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("El Eternauta")
 
@@ -219,12 +219,13 @@ class Ground_Decoration:
         self.img = img
         self.width = self.img.get_width()
         self.height = self.img.get_height()
+        self.rect = pygame.Rect(self.x, self.y, self.width, self.height)
 
     def draw(self):
 
         SCREEN.blit(self.img, (self.x, self.y))
 
-    def move(self, reset, randomise_pos):
+    def move(self, reset, randomise_pos, trainrect1, trainrect2):
         self.y -= SCREEN_SPEED
 
         if self.y < 0 - self.height:
@@ -232,6 +233,14 @@ class Ground_Decoration:
 
             if randomise_pos:
                 self.x = random.randint(0, WIDTH - self.width)
+                self.rect = pygame.Rect(self.x, self.y, self.width, self.height)
+
+                while pygame.Rect.colliderect(
+                    self.rect, trainrect1
+                ) or pygame.Rect.colliderect(self.rect, trainrect2):
+
+                    self.x = random.randint(0, WIDTH - self.width)
+                    self.rect = pygame.Rect(self.x, self.y, self.width, self.height)
 
 
 def create_decorations():
@@ -289,10 +298,11 @@ def game():
             if decoration.y + decoration.height > player.y + player.height:
                 player.draw()  # draw player before if infront of decoration
                 decoration.draw()
-                decoration.move(200, True)
+                decoration.move(200, True, train.rect, train2.rect)
             else:
                 decoration.draw()
-                decoration.move(200, True)
+                decoration.move(200, True, train.rect, train2.rect)
+
                 player.draw()  # draw player after if behind decaration
 
         for spider in spiders:
@@ -346,8 +356,8 @@ def game():
                 spider.x = random.randint(0, WIDTH)
                 player.lives -= 1
 
-        train.move(0, False)
-        train2.move(0, False)
+        train.move(0, False, train.rect, train2.rect)
+        train2.move(0, False, train.rect, train2.rect)
 
         # check if spider off screen
 
