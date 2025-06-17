@@ -208,7 +208,7 @@ class Lives:
     def draw(self, liveamount):
 
         for i in range(1, liveamount + 1):
-            SCREEN.blit(self.img, (self.x * (i * 2), self.y))
+            SCREEN.blit(self.img, (self.x + (20 * (i * 2)), self.y))
 
 
 class Ground_Decoration:
@@ -263,7 +263,9 @@ def game():
     spiders = [Bug(random.randint(0, WIDTH), HEIGHT, bug_img, blood_bug_img)]
     train = Ground_Decoration(100, 0, train_tracks)
     train2 = Ground_Decoration(100, HEIGHT, train_tracks)
-    lives = Lives(30, 20, heart_img)
+    lives = Lives(
+        WIDTH // 2 - (heart_img.get_width() * 3 + 20 * 2) // 2 - 10, 80, heart_img
+    )
 
     # main loop
     while run:
