@@ -3,6 +3,7 @@ import random
 import math
 from pygame import mixer
 import os
+import time
 
 pygame.init()
 mixer.init()
@@ -14,7 +15,7 @@ FPS = 60
 
 
 # setup font
-font = pygame.font.SysFont(None, 50)
+font = pygame.font.SysFont("freesansbold", 50)
 title_font = pygame.font.SysFont(None, 100)
 medium_font = pygame.font.SysFont(None, 75)
 
@@ -280,6 +281,8 @@ def game():
         heart_img,
     )
 
+    game_timer = 0
+
     # main loop
     while run:
 
@@ -388,7 +391,28 @@ def game():
         # check for game ending
 
         if player.lives == 0:
-            run = False
+            game_over_txt = title_font.render(f"GAME OVER", True, (0, 0, 0))
+            SCREEN.blit(
+                game_over_txt, (WIDTH // 2 - game_over_txt.get_width() // 2, 200)
+            )
+            time.sleep(1)
+
+            SCREEN.fill("black")
+
+            stage_txt = font.render(f"STAGE 1 - THE TRAIN", True, (255, 255, 255))
+            final_score_txt = font.render(f"SCORE: {score}", True, (255, 255, 255))
+            time_survive_txt = font.render(
+                f"YOU SURVIVED {round(game_timer)} SECONDS", True, (255, 255, 255)
+            )
+
+            SCREEN.blit(stage_txt, (WIDTH // 2 - stage_txt.get_width() // 2, 200))
+            SCREEN.blit(
+                final_score_txt, (WIDTH // 2 - final_score_txt.get_width() // 2, 300)
+            )
+
+            SCREEN.blit(
+                time_survive_txt, (WIDTH // 2 - time_survive_txt.get_width() // 2, 400)
+            )
 
         # draw lives
 
@@ -397,6 +421,8 @@ def game():
         # update
         pygame.display.update()
         clock.tick(FPS)
+
+        game_timer += 0.016
 
 
 # run if file is main
