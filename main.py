@@ -133,9 +133,10 @@ class Player:
         self.lives = 3
         self.rect = pygame.Rect(self.x, self.y, self.width, self.height)
 
-    def draw(self):
+    def draw(self, shoulddraw):
 
-        SCREEN.blit(self.img, (self.x, self.y))
+        if shoulddraw:
+            SCREEN.blit(self.img, (self.x, self.y))
 
     def move(self, keys):
 
@@ -265,6 +266,10 @@ def game():
     run = True
     blood_timer = 0
     score = 0
+    player_is_hit = False
+    player_flash = True
+    game_flash = 0
+    player_last_hit = 0
 
     # create objects
     player = Player(WIDTH // 2, HEIGHT // 2, juan_img)
@@ -303,14 +308,14 @@ def game():
 
         for decoration in decorations:
             if decoration.y + decoration.height > player.y + player.height:
-                player.draw()  # draw player before if infront of decoration
+                player.draw(player_flash)  # draw player before if infront of decoration
                 decoration.draw()
                 decoration.move(200, True, train.rect, train2.rect)
             else:
                 decoration.draw()
                 decoration.move(200, True, train.rect, train2.rect)
 
-                player.draw()  # draw player after if behind decaration
+                player.draw(player_flash)  # draw player after if behind decaration
 
         for spider in spiders:
             spider.draw()
@@ -363,6 +368,9 @@ def game():
                 spider.x = random.randint(0, WIDTH)
                 player.lives -= 1
 
+                player_is_hit = True
+                player_last_hit = game_timer
+
         train.move(0, False, train.rect, train2.rect)
         train2.move(0, False, train.rect, train2.rect)
 
@@ -407,22 +415,34 @@ def game():
 
             SCREEN.blit(stage_txt, (WIDTH // 2 - stage_txt.get_width() // 2, 200))
             SCREEN.blit(
-                final_score_txt, (WIDTH // 2 - final_score_txt.get_width() // 2, 300)
+                final_score_txt, (WIDTH // 2 - final_score_txt.get_width() // 2, 280)
             )
 
             SCREEN.blit(
-                time_survive_txt, (WIDTH // 2 - time_survive_txt.get_width() // 2, 400)
+                time_survive_txt, (WIDTH // 2 - time_survive_txt.get_width() // 2, 340)
             )
+
+        if player_is_hit:
+
+            if round(game_flash) % 2 == 0:
+                player_flash = False
+            else:
+                player_flash = True
 
         # draw lives
 
         lives.draw(player.lives)
+
+        if round(game_timer) - round(player_last_hit) == 2:
+            player_is_hit = False
+            player_flash = True
 
         # update
         pygame.display.update()
         clock.tick(FPS)
 
         game_timer += 0.016
+        game_flash += 0.080
 
 
 # run if file is main
