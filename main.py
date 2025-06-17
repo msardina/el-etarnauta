@@ -33,6 +33,7 @@ blood_bug_img = pygame.image.load(os.path.join("assets", f"blood spider.png"))
 heart_img = pygame.image.load(os.path.join("assets", f"life.png"))
 ground_decorations = []
 train_tracks = pygame.image.load(os.path.join("assets", "train.png"))
+end = pygame.image.load(os.path.join("assets", "end.png"))
 
 for img in range(1, 6):
     image = pygame.image.load(os.path.join("assets", f"snow{img}.png"))
@@ -403,24 +404,11 @@ def game():
             SCREEN.blit(
                 game_over_txt, (WIDTH // 2 - game_over_txt.get_width() // 2, 200)
             )
-            time.sleep(1)
+            time.sleep(0.5)
 
             SCREEN.fill("black")
 
-            stage_txt = font.render(f"STAGE 1 - THE TRAIN", True, (255, 255, 255))
-            final_score_txt = font.render(f"SCORE: {score}", True, (255, 255, 255))
-            time_survive_txt = font.render(
-                f"YOU SURVIVED {round(game_timer)} SECONDS", True, (255, 255, 255)
-            )
-
-            SCREEN.blit(stage_txt, (WIDTH // 2 - stage_txt.get_width() // 2, 200))
-            SCREEN.blit(
-                final_score_txt, (WIDTH // 2 - final_score_txt.get_width() // 2, 280)
-            )
-
-            SCREEN.blit(
-                time_survive_txt, (WIDTH // 2 - time_survive_txt.get_width() // 2, 340)
-            )
+            SCREEN.blit(end, (WIDTH // 2 - end.get_width() // 2, 0))
 
         if player_is_hit:
 
