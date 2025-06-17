@@ -273,7 +273,11 @@ def game():
     train = Ground_Decoration(100, 0, train_tracks)
     train2 = Ground_Decoration(100, HEIGHT, train_tracks)
     lives = Lives(
-        WIDTH // 2 - (heart_img.get_width() * 3 + 20 * 2) // 2 - 10, 80, heart_img
+        WIDTH // 2
+        - (heart_img.get_width() * player.lives + 20 * player.lives - 1) // 2
+        - 10,
+        80,
+        heart_img,
     )
 
     # main loop
