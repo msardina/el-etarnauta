@@ -143,11 +143,21 @@ class Player:
 
         # move player with keys
         if keys[pygame.K_RIGHT]:
-            self.x += self.speed
+
+            if self.x < WIDTH - self.width:
+                self.x += self.speed
+
         if keys[pygame.K_LEFT]:
-            self.x -= self.speed
+
+            if self.x > 0:
+
+                self.x -= self.speed
+
         if keys[pygame.K_DOWN]:
-            self.y += self.speed
+
+            if self.y < HEIGHT - self.height:
+                self.y += self.speed
+
         if keys[pygame.K_UP]:
             self.y -= self.speed
         else:
@@ -404,11 +414,17 @@ def game():
             SCREEN.blit(
                 game_over_txt, (WIDTH // 2 - game_over_txt.get_width() // 2, 200)
             )
-            time.sleep(0.5)
+
+            pygame.display.update()
+            time.sleep(2)
 
             SCREEN.fill("black")
 
             SCREEN.blit(end, (WIDTH // 2 - end.get_width() // 2, 0))
+
+            time.sleep(2)
+
+            run = False
 
         if player_is_hit:
 
