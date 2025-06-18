@@ -25,6 +25,7 @@ SCREEN_SPEED = 1
 # music
 
 shot_gun = pygame.mixer.Sound(os.path.join("sounds", "shotgun.wav"))
+stage_pass = pygame.mixer.Sound(os.path.join("sounds", "record.wav"))
 
 # images
 juan_img = pygame.image.load(os.path.join("assets", f"juan.png"))
@@ -281,6 +282,7 @@ def game():
     player_flash = True
     game_flash = 0
     player_last_hit = 0
+    stage = 1
 
     # create objects
     player = Player(WIDTH // 2, HEIGHT // 2, juan_img)
@@ -440,6 +442,64 @@ def game():
         if round(game_timer) - round(player_last_hit) == 2:
             player_is_hit = False
             player_flash = True
+
+        # complete level 1
+
+        if score >= 10:
+            stage_pass.play()
+
+            for spider in spiders:  # hide spiders
+                spider.x = 12304
+                spider.y = 12345
+                spider.draw()
+
+                for decoration in decorations:
+                    decoration.draw()
+
+                train.draw()
+                train2.draw()
+
+            pygame.display.update()
+
+            spiders = []
+
+            while not player.y > HEIGHT:
+
+                player.y += 4
+
+                # draw
+                SCREEN.fill("white")
+
+                for decoration in decorations:
+                    decoration.draw()
+
+                train.draw()
+                train2.draw()
+
+                player.draw(True)
+
+                # text
+                stage_pass_text = font.render(f"STAGE {stage} PASSED", True, (0, 0, 0))
+                reach_text = font.render(f"but what can you reach", True, (0, 0, 0))
+
+                SCREEN.blit(
+                    stage_pass_text,
+                    (WIDTH // 2 - stage_pass_text.get_width() // 2, 200),
+                )
+
+                SCREEN.blit(
+                    reach_text,
+                    (WIDTH // 2 - reach_text.get_width() // 2, 250),
+                )
+
+                # update
+                pygame.display.update()
+                clock.tick(FPS)
+
+            time.sleep(2)
+            score = 0
+
+            stage += 1
 
         # update
         pygame.display.update()
