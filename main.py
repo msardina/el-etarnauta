@@ -27,6 +27,7 @@ SCORE_PER_LEVEL = 300
 
 shot_gun = pygame.mixer.Sound(os.path.join("sounds", "shotgun.wav"))
 stage_pass = pygame.mixer.Sound(os.path.join("sounds", "record.wav"))
+death_sfx = pygame.mixer.Sound(os.path.join("sounds", "death.mp3"))
 
 # images
 juan_img = pygame.image.load(os.path.join("assets", f"juan.png"))
@@ -424,14 +425,10 @@ def game():
                 game_over_txt, (WIDTH // 2 - game_over_txt.get_width() // 2, 200)
             )
 
+            death_sfx.play()
             pygame.display.update()
             time.sleep(2)
-
             SCREEN.fill("black")
-
-            SCREEN.blit(end, (WIDTH // 2 - end.get_width() // 2, 0))
-
-            time.sleep(2)
 
             run = False
 
