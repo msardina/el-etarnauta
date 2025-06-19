@@ -21,7 +21,7 @@ medium_font = pygame.font.SysFont(None, 75)
 
 # const
 SCREEN_SPEED = 1
-SCORE_PER_LEVEL = 5
+SCORE_PER_LEVEL = 300
 
 # music
 
