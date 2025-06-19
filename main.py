@@ -21,6 +21,7 @@ medium_font = pygame.font.SysFont(None, 75)
 
 # const
 SCREEN_SPEED = 1
+SCORE_PER_LEVEL = 5
 
 # music
 
@@ -160,9 +161,13 @@ class Player:
                 self.y += self.speed
 
         if keys[pygame.K_UP]:
-            self.y -= self.speed
+
+            if self.y > 0:
+                self.y -= self.speed
         else:
-            self.y -= SCREEN_SPEED
+
+            if self.y > 0:
+                self.y -= SCREEN_SPEED
 
         # update rect
         self.rect = pygame.Rect(self.x, self.y, self.width, self.height)
@@ -172,7 +177,9 @@ class Player:
         if keys[pygame.K_SPACE] and not self.is_firing:
             shot_gun.play()
             self.is_firing = True
-            self.speed = 2
+            self.speed = 1
+            self.y -= 3
+
             return True
 
         if not keys[pygame.K_SPACE]:
@@ -445,7 +452,7 @@ def game():
 
         # complete level 1
 
-        if score >= 10:
+        if score >= SCORE_PER_LEVEL:
             stage_pass.play()
 
             for spider in spiders:  # hide spiders
@@ -480,7 +487,7 @@ def game():
 
                 # text
                 stage_pass_text = font.render(f"STAGE {stage} PASSED", True, (0, 0, 0))
-                reach_text = font.render(f"but what can you reach", True, (0, 0, 0))
+                reach_text = font.render(f"Which level can you reach?", True, (0, 0, 0))
 
                 SCREEN.blit(
                     stage_pass_text,
