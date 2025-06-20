@@ -79,34 +79,32 @@ class Bug:
     def draw(self):
         SCREEN.blit(self.img, (self.x, self.y))
 
-    def move(self, playerx, playery):
+    def move(self, player_x, player_y):
         self.y -= SCREEN_SPEED
         self.rect = pygame.Rect(self.x, self.y, self.width, self.height)
 
-        if self.y > playery:
+        if self.y > player_y:
             if random.randint(1, 5) == 1:
                 self.y -= 3
 
-        if self.y < playery:
+        elif self.y < player_y:
             if random.randint(1, 5) == 1:
                 self.y += 3
 
-        if self.x > playerx:
+        if self.x > player_x:
             if random.randint(1, 5) == 1:
                 self.x -= 3
 
-        if self.x < playerx:
+        elif self.x < player_x:
             if random.randint(1, 5) == 1:
                 self.x += 5
 
     def is_offscreen(self):
-
         if self.y < 0 - self.height:
             return True
         return False
 
     def hit(self):
-
         self.lives -= 1
         self.img = self.bloodimg
 
@@ -117,7 +115,6 @@ class Bug:
             self.lives = 5
 
     def collide(self, playerrect):
-
         if pygame.Rect.colliderect(self.rect, playerrect):
             return True
         return False
@@ -138,12 +135,10 @@ class Player:
         self.rect = pygame.Rect(self.x, self.y, self.width, self.height)
 
     def draw(self, shoulddraw):
-
         if shoulddraw:
             SCREEN.blit(self.img, (self.x, self.y))
 
     def move(self, keys):
-
         # move player with keys
         if keys[pygame.K_RIGHT]:
 
@@ -174,7 +169,6 @@ class Player:
         self.rect = pygame.Rect(self.x, self.y, self.width, self.height)
 
     def is_fire(self, keys):
-
         if keys[pygame.K_SPACE] and not self.is_firing:
             shot_gun.play()
             self.is_firing = True
