@@ -179,7 +179,9 @@ class Player:
             shot_gun.play()
             self.is_firing = True
             self.speed = 1
-            self.y -= 3
+
+            if self.y > 0:
+                self.y -= 3
 
             return True
 
