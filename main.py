@@ -83,6 +83,8 @@ class Bug:
         self.y -= SCREEN_SPEED
         self.rect = pygame.Rect(self.x, self.y, self.width, self.height)
 
+        # go in the direction of the player randomly
+
         if self.y > player_y:
             if random.randint(1, 5) == 1:
                 self.y -= 3
@@ -100,7 +102,7 @@ class Bug:
                 self.x += 5
 
     def is_offscreen(self):
-        if self.y < 0 - self.height:
+        if self.y < 0 - self.height:  # check if offscreen
             return True
         return False
 
@@ -108,14 +110,14 @@ class Bug:
         self.lives -= 1
         self.img = self.bloodimg
 
-        if self.lives == 0:
+        if self.lives == 0:  # check if spider is dead
             self.x = random.randint(0, WIDTH)
             self.y = HEIGHT + 200
             self.rect = pygame.Rect(self.x, self.y, self.width, self.height)
             self.lives = 5
 
     def collide(self, playerrect):
-        if pygame.Rect.colliderect(self.rect, playerrect):
+        if pygame.Rect.colliderect(self.rect, playerrect):  # collision detection
             return True
         return False
 
@@ -169,7 +171,7 @@ class Player:
         self.rect = pygame.Rect(self.x, self.y, self.width, self.height)
 
     def is_fire(self, keys):
-        if keys[pygame.K_SPACE] and not self.is_firing:
+        if keys[pygame.K_SPACE] and not self.is_firing:  # fire shot
             shot_gun.play()
             self.is_firing = True
             self.speed = 1
@@ -226,7 +228,9 @@ class Lives:
     def draw(self, liveamount):
 
         for i in range(1, liveamount + 1):
-            SCREEN.blit(self.img, (self.x + (20 * (i * 2)), self.y))
+            SCREEN.blit(
+                self.img, (self.x + (20 * (i * 2)), self.y)
+            )  # draw lives using maths
 
 
 class Ground_Decoration:
@@ -249,10 +253,11 @@ class Ground_Decoration:
         if self.y < 0 - self.height:
             self.y = HEIGHT + reset
 
-            if randomise_pos:
+            if randomise_pos:  # go to a random position
                 self.x = random.randint(0, WIDTH - self.width)
                 self.rect = pygame.Rect(self.x, self.y, self.width, self.height)
 
+                # dont spawn on train tracks
                 while pygame.Rect.colliderect(
                     self.rect, trainrect1
                 ) or pygame.Rect.colliderect(self.rect, trainrect2):
@@ -264,7 +269,7 @@ class Ground_Decoration:
 def create_decorations():
     decorations = []
 
-    for decoration_num in range(1, len(ground_decorations)):
+    for decoration_num in range(1, len(ground_decorations)):  # make decorations
         decorations.append(
             Ground_Decoration(
                 random.randint(0, WIDTH),
@@ -352,7 +357,7 @@ def game():
                 bullet.draw()
                 bullet.move()
 
-                for spider in spiders:
+                for spider in spiders:  # loop through spiders to see if hit by bullet
                     if bullet.collide_bug(spider.rect):
                         spider.hit()
 
@@ -369,7 +374,7 @@ def game():
         # update blood timer
         blood_timer += 0.20
 
-        if blood_timer == 1:
+        if blood_timer == 1:  # make blood animation for spiders reset
             for spider in spiders:
                 spider.img = spider.normalimg
             blood_timer = 0
@@ -380,7 +385,7 @@ def game():
         for spider in spiders:
             spider.move(player.x, player.y)
 
-            if spider.collide(player.rect):
+            if spider.collide(player.rect):  # check for colliosn with player
                 spider.y = HEIGHT + 200
                 spider.x = random.randint(0, WIDTH)
                 player.lives -= 1
@@ -428,7 +433,7 @@ def game():
 
             run = False
 
-        if player_is_hit:
+        if player_is_hit:  # flash the player using math when hit
 
             if round(game_flash) % 2 == 0:
                 player_flash = False
