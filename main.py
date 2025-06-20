@@ -97,7 +97,7 @@ class Bug:
 
         if self.x < playerx:
             if random.randint(1, 5) == 1:
-                self.x += 3
+                self.x += 5
 
     def is_offscreen(self):
 
