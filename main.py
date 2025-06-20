@@ -57,7 +57,7 @@ for img in range(1, 3):
 # setup a screen
 WIDTH, HEIGHT = 800, train_tracks.get_height() - 2
 SCREEN = pygame.display.set_mode((WIDTH, HEIGHT))
-pygame.display.set_caption("El Eternauta")
+pygame.display.set_caption("El Eternauta (FAN GAME)")
 
 # classes
 
