@@ -5,6 +5,10 @@ After months I present... The Eternaut
 
 A fan-game based on the Argentine movie and comic "The Eternaut". No rights towards the movie or book are taken in this game. This is only a fan game.
 
+Comic Creaters (the original) - `Héctor Germán Oesterheld (writer) and Francisco Solano López (artist)`
+
+Movie Director (adaptation on book) - `Bruno Stagnaro`
+
 ## How to Play
 
 The game's controls are very easy with only 5 buttons to manage. The directional keys to steer the player (Juan) around. And the space bar to shoot at the incoming spiders.
