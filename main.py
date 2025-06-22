@@ -364,6 +364,7 @@ def game():
     game_flash = 0
     player_last_hit = 0
     stage = 1
+    difficulty = 1200
 
     # create objects
     player = Player(WIDTH // 2, HEIGHT // 2, juan_img)
@@ -477,7 +478,7 @@ def game():
 
         # add spiders
 
-        if random.randint(1, 1200) == 120:
+        if random.randint(1, difficulty) == 1:
             spiders.append(
                 Bug(random.randint(0, WIDTH), HEIGHT, bug_img, blood_bug_img)
             )
@@ -575,7 +576,7 @@ def game():
 
             time.sleep(2)
             score = 0
-
+            difficulty -= 100
             stage += 1
 
         # update
