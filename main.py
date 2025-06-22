@@ -28,6 +28,7 @@ SCORE_PER_LEVEL = 300
 shot_gun = pygame.mixer.Sound(os.path.join("sounds", "shotgun.wav"))
 stage_pass = pygame.mixer.Sound(os.path.join("sounds", "record.wav"))
 death_sfx = pygame.mixer.Sound(os.path.join("sounds", "death.mp3"))
+begin_sfx = pygame.mixer.Sound(os.path.join("sounds", "hover.wav"))
 
 # images
 juan_img = pygame.image.load(os.path.join("assets", f"juan.png"))
@@ -342,6 +343,7 @@ def title():
         if keys[pygame.K_RETURN]:
             if arrow_y == 375:
                 title = False
+                begin_sfx.play()
 
         # update
         pygame.display.update()
