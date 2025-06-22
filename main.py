@@ -38,6 +38,7 @@ ground_decorations = []
 train_tracks = pygame.image.load(os.path.join("assets", "train.png"))
 end = pygame.image.load(os.path.join("assets", "end.png"))
 title_img = pygame.image.load(os.path.join("assets", "title.png"))
+arrow_img = pygame.image.load(os.path.join("assets", "arrow.png"))
 
 for img in range(1, 6):
     image = pygame.image.load(os.path.join("assets", f"snow{img}.png"))
@@ -56,7 +57,7 @@ for img in range(1, 3):
     ground_decorations.append(scale_image)
 
 # setup a screen
-WIDTH, HEIGHT = 800, train_tracks.get_height() - 2
+WIDTH, HEIGHT = 800, train_tracks.get_height() - 4
 SCREEN = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("El Eternauta (FAN GAME)")
 
@@ -287,6 +288,9 @@ def title():
     # variables
 
     title = True
+    arrow_y = 375
+    arrow_pressed_up = False
+    arrow_pressed_down = False
 
     # title loop
 
@@ -304,14 +308,40 @@ def title():
         # draw
 
         SCREEN.blit(title_img, (WIDTH // 2 - title_img.get_width() // 2, 0))
+        SCREEN.blit(arrow_img, (345, arrow_y))
 
         # move
 
-        # exit loop
+        # keys
         keys = pygame.key.get_pressed()
 
+        if keys[pygame.K_UP]:
+            if not arrow_pressed_up:
+                arrow_y -= 32
+                arrow_pressed_up = True
+        else:
+            arrow_pressed_up = False
+
+        if keys[pygame.K_DOWN]:
+
+            if not arrow_pressed_down:
+                arrow_y += 32
+                arrow_pressed_down = True
+
+        else:
+            arrow_pressed_down = False
+
+        # reset arrow positions
+
+        if arrow_y < 375:
+            arrow_y = 375 + 32
+
+        if arrow_y > 375 + 32:
+            arrow_y = 375
+
         if keys[pygame.K_RETURN]:
-            title = False
+            if arrow_y == 375:
+                title = False
 
         # update
         pygame.display.update()
