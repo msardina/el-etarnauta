@@ -320,6 +320,8 @@ def title():
             if not arrow_pressed_up:
                 arrow_y -= 32
                 arrow_pressed_up = True
+                begin_sfx.play()
+
         else:
             arrow_pressed_up = False
 
@@ -328,6 +330,7 @@ def title():
             if not arrow_pressed_down:
                 arrow_y += 32
                 arrow_pressed_down = True
+                begin_sfx.play()
 
         else:
             arrow_pressed_down = False
