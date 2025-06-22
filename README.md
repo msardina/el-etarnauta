@@ -3,11 +3,9 @@
 
 After months I present... The Eternaut 
 
-A fan-game based on the Argentine movie and comic "The Eternaut". No rights towards the movie or book are taken in this game. This is only a fan game.
+A fan-game based on the 1957 Argentine comic by [Héctor Germán Oesterheld](https://en.wikipedia.org/wiki/H%C3%A9ctor_Germ%C3%A1n_Oesterheld) and [Francisco Solano López](https://en.wikipedia.org/wiki/Francisco_Solano_L%C3%B3pez_(comics)).
 
-Comic Creaters (the original) - `Héctor Germán Oesterheld (writer) and Francisco Solano López (artist)`
-
-Movie Director (adaptation on book) - `Bruno Stagnaro`
+More about the movie adaptation [here](https://en.wikipedia.org/wiki/The_Eternaut_(TV_series))
 
 ## How to Play
 
@@ -22,22 +20,14 @@ Every 300 points you will continue to the next stage where the game gets proggre
 A deadly snow has come to Earth killing thousands if not millions of people. Juan survived with a mask to not inhale the snow in his lungs. Aliens that look like big spiders are attacking to kill all the surviving people. You must kill them all.
 
 ## Snapshots
-
-Snapshot 1:
-- ![image1](assets/eternaut.png)
-
 Snapshot 2:
 - ![image2](assets/eternaut2.png)
-
-Snapshot 3:
-- ![image3](assets/eternaut3.png)
-
+- 
 ## Credits
 
-Code - 100% by `msardina`
 
-Art - 95% by `msardina` (All art except for spider and Juan)
+Code -  `msardina`
 
-Sound - 100% by `msardina`
+Art - `msardina` + inspiration from [Lomas de Zamora](https://launion.com.ar/nota/47650/2025/05/furor-por-el-eternauta--crean-un-videojuego-con-juan-salvo-favalli-y-compania)
 
-Support + Ideas - 100% by `ssardina`
+Sound - `msardina`
