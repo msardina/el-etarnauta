@@ -37,6 +37,7 @@ heart_img = pygame.image.load(os.path.join("assets", f"life.png"))
 ground_decorations = []
 train_tracks = pygame.image.load(os.path.join("assets", "train.png"))
 end = pygame.image.load(os.path.join("assets", "end.png"))
+title_img = pygame.image.load(os.path.join("assets", "title.png"))
 
 for img in range(1, 6):
     image = pygame.image.load(os.path.join("assets", f"snow{img}.png"))
@@ -281,6 +282,42 @@ def create_decorations():
     return decorations
 
 
+def title():
+
+    # variables
+
+    title = True
+
+    # title loop
+
+    while title:
+
+        # loop through evnets
+        for event in pygame.event.get():
+
+            # check for x button
+            if event.type == pygame.QUIT:
+                title = False
+                pygame.quit()
+                quit()
+
+        # draw
+
+        SCREEN.blit(title_img, (WIDTH // 2 - title_img.get_width() // 2, 0))
+
+        # move
+
+        # exit loop
+        keys = pygame.key.get_pressed()
+
+        if keys[pygame.K_RETURN]:
+            title = False
+
+        # update
+        pygame.display.update()
+        clock.tick(FPS)
+
+
 def game():
 
     # variables
@@ -514,7 +551,10 @@ def game():
         game_flash += 0.080
 
 
-# run if file is main
+# run then game
 
 if __name__ == "__main__":
-    game()
+
+    while True:
+        title()
+        game()
