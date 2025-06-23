@@ -364,7 +364,7 @@ def game():
     game_flash = 0
     player_last_hit = 0
     stage = 1
-    difficulty = 1200
+    difficulty = 700
 
     # create objects
     player = Player(WIDTH // 2, HEIGHT // 2, juan_img)
