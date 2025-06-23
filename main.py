@@ -80,7 +80,6 @@ pygame.display.set_caption("El Eternauta (FAN GAME)")
 
 
 class Bug:
-
     def __init__(self, x, y, normalimg, bloodimg):
         self.x = x
         self.y = y
@@ -102,26 +101,18 @@ class Bug:
 
         # go in the direction of the player randomly
 
-        if self.y > player_y:
-            if random.randint(1, 5) == 1:
-                self.y -= 3
+        if self.y > player_y and random.randint(1, 5) == 1:
+            self.y -= 3
+        elif self.y < player_y and random.randint(1, 5) == 1:
+            self.y += 3
 
-        elif self.y < player_y:
-            if random.randint(1, 5) == 1:
-                self.y += 3
-
-        if self.x > player_x:
-            if random.randint(1, 5) == 1:
-                self.x -= 3
-
-        elif self.x < player_x:
-            if random.randint(1, 5) == 1:
-                self.x += 5
+        if self.x > player_x and random.randint(1, 5) == 1:
+            self.x -= 3
+        elif self.x < player_x and random.randint(1, 5) == 1:
+            self.x += 5
 
     def is_offscreen(self):
-        if self.y < 0 - self.height:  # check if offscreen
-            return True
-        return False
+        return self.y < 0 - self.height  # check if offscreen
 
     def hit(self):
         self.lives -= 1
@@ -134,9 +125,7 @@ class Bug:
             self.lives = 5
 
     def collide(self, playerrect):
-        if pygame.Rect.colliderect(self.rect, playerrect):  # collision detection
-            return True
-        return False
+        return pygame.Rect.colliderect(self.rect, playerrect)  # collision detection
 
 
 class Player:
