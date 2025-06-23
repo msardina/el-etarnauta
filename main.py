@@ -292,6 +292,7 @@ def title():
     arrow_y = 375
     arrow_pressed_up = False
     arrow_pressed_down = False
+    intro_x = 0
 
     # title loop
 
@@ -310,6 +311,7 @@ def title():
 
         SCREEN.blit(title_img, (WIDTH // 2 - title_img.get_width() // 2, 0))
         SCREEN.blit(arrow_img, (345, arrow_y))
+        pygame.draw.rect(SCREEN, (0, 0, 0), (intro_x, 0, WIDTH, 300))
 
         # move
 
@@ -347,6 +349,11 @@ def title():
             if arrow_y == 375:
                 title = False
                 begin_sfx.play()
+
+        # move rect
+
+        if intro_x < WIDTH:
+            intro_x += 7
 
         # update
         pygame.display.update()
