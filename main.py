@@ -4,6 +4,7 @@ import math
 from pygame import mixer
 import os
 import time
+from pathlib import Path
 
 pygame.init()
 mixer.init()
@@ -13,6 +14,9 @@ mixer.init()
 clock = pygame.time.Clock()
 FPS = 60
 
+ASSETS_ROOT = Path("assets")
+ASSETS_IMG = ASSETS_ROOT / "imgs"
+ASSETS_SFX = ASSETS_ROOT / "sounds"
 
 # setup font
 font = pygame.font.SysFont("freesansbold", 50)
@@ -22,37 +26,49 @@ medium_font = pygame.font.SysFont(None, 75)
 # const
 SCREEN_SPEED = 1
 SCORE_PER_LEVEL = 300
+SCALE_DECORATION_NUM = 3
 
 # music
-
-shot_gun = pygame.mixer.Sound(os.path.join("sounds", "shotgun.wav"))
-stage_pass = pygame.mixer.Sound(os.path.join("sounds", "record.wav"))
-death_sfx = pygame.mixer.Sound(os.path.join("sounds", "death.mp3"))
-begin_sfx = pygame.mixer.Sound(os.path.join("sounds", "hover.wav"))
+heart = pygame.mixer.Sound(ASSETS_SFX / "heartbeat.wav")
+shot_gun = pygame.mixer.Sound(ASSETS_SFX / "gun.wav")
+stage_pass = pygame.mixer.Sound(ASSETS_SFX / "record.wav")
+death_sfx = pygame.mixer.Sound(ASSETS_SFX / "death.mp3")
+begin_sfx = pygame.mixer.Sound(ASSETS_SFX / "hover.wav")
+intro_sfx = pygame.mixer.Sound(ASSETS_SFX / "lightsaber.mp3")
 
 # images
-juan_img = pygame.image.load(os.path.join("assets", f"juan.png"))
-bug_img = pygame.image.load(os.path.join("assets", f"spider.png"))
-blood_bug_img = pygame.image.load(os.path.join("assets", f"blood spider.png"))
-heart_img = pygame.image.load(os.path.join("assets", f"life.png"))
+juan_img = pygame.image.load(ASSETS_IMG / f"juan.png")
+bug_img = pygame.image.load(ASSETS_IMG / f"spider.png")
+blood_bug_img = pygame.image.load(ASSETS_IMG / f"blood spider.png")
+heart_img = pygame.image.load(ASSETS_IMG / f"life.png")
 ground_decorations = []
-train_tracks = pygame.image.load(os.path.join("assets", "train.png"))
-end = pygame.image.load(os.path.join("assets", "end.png"))
-title_img = pygame.image.load(os.path.join("assets", "title.png"))
-arrow_img = pygame.image.load(os.path.join("assets", "arrow.png"))
+train_tracks = pygame.image.load(ASSETS_IMG / "train.png")
+end = pygame.image.load(ASSETS_IMG / "end.png")
+title_img = pygame.image.load(ASSETS_IMG / "title.png")
+arrow_img = pygame.image.load(ASSETS_IMG / "arrow.png")
 
+# load snow asses
 for img in range(1, 6):
-    image = pygame.image.load(os.path.join("assets", f"snow{img}.png"))
+    image = pygame.image.load(ASSETS_IMG / f"snow{img}.png")
     scale_image = pygame.transform.scale(
-        image, (image.get_width() * 3, image.get_height() * 3)
+        image,
+        (
+            image.get_width() * SCALE_DECORATION_NUM,
+            image.get_height() * SCALE_DECORATION_NUM,
+        ),
     )
 
     ground_decorations.append(scale_image)
 
+# load bush assets
 for img in range(1, 3):
-    image = pygame.image.load(os.path.join("assets", f"bush{img}.png"))
+    image = pygame.image.load(ASSETS_IMG / f"bush{img}.png")
     scale_image = pygame.transform.scale(
-        image, (image.get_width() * 3, image.get_height() * 3)
+        image,
+        (
+            image.get_width() * SCALE_DECORATION_NUM,
+            image.get_height() * SCALE_DECORATION_NUM,
+        ),
     )
 
     ground_decorations.append(scale_image)
@@ -61,8 +77,6 @@ for img in range(1, 3):
 WIDTH, HEIGHT = 800, train_tracks.get_height() - 4
 SCREEN = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("El Eternauta (FAN GAME)")
-
-# classes
 
 
 class Bug:
@@ -294,6 +308,9 @@ def title():
     arrow_pressed_down = False
     intro_x = 0
 
+    # play lightsaber sound
+    intro_sfx.play()
+
     # title loop
 
     while title:
@@ -389,6 +406,7 @@ def game():
     )
 
     game_timer = 0
+    heart.play()
 
     # main loop
     while run:
@@ -401,6 +419,9 @@ def game():
                 run = False
                 pygame.quit()
                 quit()
+
+        if random.randint(1, 1200) == 1:
+            heart.play()
 
         # draw
         SCREEN.fill("white")
