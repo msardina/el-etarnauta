@@ -129,7 +129,6 @@ class Bug:
 
 
 class Player:
-
     def __init__(self, x, y, img):
         self.x = x
         self.y = y
@@ -149,27 +148,21 @@ class Player:
     def move(self, keys):
         # move player with keys
         if keys[pygame.K_RIGHT]:
-
             if self.x < WIDTH - self.width:
                 self.x += self.speed
 
         if keys[pygame.K_LEFT]:
-
             if self.x > 0:
-
                 self.x -= self.speed
 
         if keys[pygame.K_DOWN]:
-
             if self.y < HEIGHT - self.height:
                 self.y += self.speed
 
         if keys[pygame.K_UP]:
-
             if self.y > 0:
                 self.y -= self.speed
         else:
-
             if self.y > 0:
                 self.y -= SCREEN_SPEED
 
@@ -189,14 +182,11 @@ class Player:
 
         if not keys[pygame.K_SPACE]:
             self.speed = 3
-
             self.is_firing = False
-
         return False
 
 
 class Bullet:
-
     def __init__(self, x, y):
         self.x = x
         self.y = y
@@ -212,27 +202,19 @@ class Bullet:
         self.rect = pygame.Rect(self.x, self.y, self.width, self.height)
 
     def is_offscreen(self):
-
-        if self.y > HEIGHT:
-            return True
-        return False
+        return self.y > HEIGHT
 
     def collide_bug(self, bugrect):
-
-        if pygame.Rect.colliderect(self.rect, bugrect):
-            return True
-        return False
+        return pygame.Rect.colliderect(self.rect, bugrect)
 
 
 class Lives:
-
     def __init__(self, x, y, img):
         self.x = x
         self.y = y
         self.img = img
 
     def draw(self, liveamount):
-
         for i in range(1, liveamount + 1):
             SCREEN.blit(
                 self.img, (self.x + (20 * (i * 2)), self.y)
@@ -240,7 +222,6 @@ class Lives:
 
 
 class Ground_Decoration:
-
     def __init__(self, x, y, img):
         self.x = x
         self.y = y
@@ -250,7 +231,6 @@ class Ground_Decoration:
         self.rect = pygame.Rect(self.x, self.y, self.width, self.height)
 
     def draw(self):
-
         SCREEN.blit(self.img, (self.x, self.y))
 
     def move(self, reset, randomise_pos, trainrect1, trainrect2):
@@ -258,7 +238,6 @@ class Ground_Decoration:
 
         if self.y < 0 - self.height:
             self.y = HEIGHT + reset
-
             if randomise_pos:  # go to a random position
                 self.x = random.randint(0, WIDTH - self.width)
                 self.rect = pygame.Rect(self.x, self.y, self.width, self.height)
@@ -334,12 +313,10 @@ def title():
             arrow_pressed_up = False
 
         if keys[pygame.K_DOWN]:
-
             if not arrow_pressed_down:
                 arrow_y += 32
                 arrow_pressed_down = True
                 begin_sfx.play()
-
         else:
             arrow_pressed_down = False
 
@@ -347,17 +324,14 @@ def title():
 
         if arrow_y < 375:
             arrow_y = 375 + 32
-
         if arrow_y > 375 + 32:
             arrow_y = 375
-
         if keys[pygame.K_RETURN]:
             if arrow_y == 375:
                 title = False
                 begin_sfx.play()
 
         # move rect
-
         if intro_x < WIDTH:
             intro_x += 7
 
@@ -450,13 +424,10 @@ def game():
                 for spider in spiders:  # loop through spiders to see if hit by bullet
                     if bullet.collide_bug(spider.rect):
                         spider.hit()
-
                         score += 1
-
                         if bullet in bullets:
                             bullets.remove(bullet)
                         break
-
                     elif bullet.is_offscreen():
                         if bullet in bullets:
                             bullets.remove(bullet)
@@ -520,11 +491,9 @@ def game():
             pygame.display.update()
             time.sleep(2)
             SCREEN.fill("black")
-
             run = False
 
         if player_is_hit:  # flash the player using math when hit
-
             if round(game_flash) % 2 == 0:
                 player_flash = False
             else:
@@ -555,8 +524,7 @@ def game():
                 train2.draw()
 
             pygame.display.update()
-
-            spiders = []
+            spiders = []  # reset spiders
 
             while not player.y > HEIGHT:
 
