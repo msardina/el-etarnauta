@@ -532,7 +532,7 @@ def game():
                 player.y += 4
 
                 # draw
-                SCREEN.fill("white")
+                SCREEN.fill((255, 255, 255))
 
                 for decoration in decorations:
                     decoration.draw()
