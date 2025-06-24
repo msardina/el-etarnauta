@@ -43,7 +43,7 @@ blood_bug_img = pygame.image.load(ASSETS_IMG / f"blood spider.png")
 heart_img = pygame.image.load(ASSETS_IMG / f"life.png")
 ground_decorations = []
 train_tracks = pygame.image.load(ASSETS_IMG / "train.png")
-end = pygame.image.load(ASSETS_IMG / "end.png")
+end = pygame.image.load(ASSETS_IMG / "deathscreen.png")
 title_img = pygame.image.load(ASSETS_IMG / "title.png")
 arrow_img = pygame.image.load(ASSETS_IMG / "arrow.png")
 
@@ -488,9 +488,10 @@ def game():
             )
 
             death_sfx.play()
+            time.sleep(2)
             pygame.display.update()
             time.sleep(2)
-            SCREEN.fill("black")
+
             run = False
 
         if player_is_hit:  # flash the player using math when hit
