@@ -9,6 +9,12 @@ from pathlib import Path
 pygame.init()
 mixer.init()
 
+# colors
+BLACK = (0, 0, 0)
+WHITE = (255, 255, 255)
+GREEN = (0, 128, 0)
+RED = (128, 0, 0)
+BLUE = (0, 0, 128)
 
 # clock
 clock = pygame.time.Clock()
@@ -195,7 +201,7 @@ class Bullet:
         self.rect = pygame.Rect(self.x, self.y, self.width, self.height)
 
     def draw(self):
-        pygame.draw.rect(SCREEN, (0, 0, 0), self.rect)
+        pygame.draw.rect(SCREEN, BLACK, self.rect)
 
     def move(self):
         self.y += 20
@@ -277,7 +283,7 @@ def title():
     intro_x = 0
 
     # make screen black
-    SCREEN.fill("black")
+    SCREEN.fill(BLACK)
 
     # play lightsaber sound
     intro_sfx.play()
@@ -390,7 +396,7 @@ def game():
             heart.play()
 
         # draw
-        SCREEN.fill("white")
+        SCREEN.fill(WHITE)
 
         train.draw()
         train2.draw()
@@ -477,7 +483,7 @@ def game():
         #### draw score ####
 
         # render text
-        score_txt = title_font.render(f"{score}", True, (0, 0, 0))
+        score_txt = title_font.render(f"{score}", True, BLACK)
 
         # draw score
         SCREEN.blit(score_txt, (WIDTH // 2 - score_txt.get_width() // 2, 20))
@@ -485,7 +491,7 @@ def game():
         # check for game ending
 
         if player.lives == 0:
-            game_over_txt = title_font.render(f"GAME OVER", True, (0, 0, 0))
+            game_over_txt = title_font.render(f"GAME OVER", True, BLACK)
             SCREEN.blit(
                 game_over_txt, (WIDTH // 2 - game_over_txt.get_width() // 2, 200)
             )
@@ -546,8 +552,8 @@ def game():
                 player.draw(True)
 
                 # text
-                stage_pass_text = font.render(f"STAGE {stage} PASSED", True, (0, 0, 0))
-                reach_text = font.render(f"Which level can you reach?", True, (0, 0, 0))
+                stage_pass_text = font.render(f"STAGE {stage} PASSED", True, BLACK)
+                reach_text = font.render(f"Which level can you reach?", True, BLACK)
 
                 SCREEN.blit(
                     stage_pass_text,
