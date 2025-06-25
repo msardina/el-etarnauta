@@ -53,6 +53,7 @@ end = pygame.image.load(ASSETS_IMG / "deathscreen.png")
 title_img = pygame.image.load(ASSETS_IMG / "title.png")
 arrow_img = pygame.image.load(ASSETS_IMG / "arrow.png")
 gun_selection = pygame.image.load(ASSETS_IMG / "gun.png")
+locked_gun_selection = pygame.image.load(ASSETS_IMG / "locked.png")
 
 # load snow asses
 for img in range(1, 6):
@@ -283,6 +284,9 @@ def title():
     arrow_pressed_down = False
     intro_x = 0
     gun_selection_on = False
+    gun_selection_no = 0
+    gun_selection_current_img = gun_selection
+    gun_selection_changing = False
 
     # make screen black
     SCREEN.fill(BLACK)
@@ -346,8 +350,33 @@ def title():
                 gun_selection_on = True
                 begin_sfx.play()
 
-        if gun_selection_on and keys[pygame.K_z]:
-            gun_selection_on = False
+        if gun_selection_on:
+            if keys[pygame.K_z]:
+                gun_selection_on = False
+                begin_sfx.play()
+
+            if keys[pygame.K_RIGHT] and not gun_selection_changing:
+                gun_selection_no += 1
+                begin_sfx.play()
+                gun_selection_changing = True
+                if gun_selection_no > 1:
+                    gun_selection_no = 0
+
+            elif keys[pygame.K_LEFT] and not gun_selection_changing:
+                gun_selection_no -= 1
+                gun_selection_changing = True
+                begin_sfx.play()
+
+                if gun_selection_no < 0:
+                    gun_selection_no = 1
+
+            if not keys[pygame.K_RIGHT] and not keys[pygame.K_LEFT]:
+                gun_selection_changing = False
+
+        if gun_selection_no == 1:
+            gun_selection_current_img = gun_selection
+        else:
+            gun_selection_current_img = locked_gun_selection
 
         # move rect
         if intro_x < WIDTH:
@@ -356,7 +385,10 @@ def title():
         # draw gun selection
 
         if gun_selection_on:
-            SCREEN.blit(gun_selection, (WIDTH // 2 - gun_selection.get_width() // 2, 0))
+            SCREEN.blit(
+                gun_selection_current_img,
+                (WIDTH // 2 - gun_selection_current_img.get_width() // 2, 0),
+            )
 
         # update
         pygame.display.update()
