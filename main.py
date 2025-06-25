@@ -104,21 +104,35 @@ class Bug:
     def draw(self):
         SCREEN.blit(self.img, (self.x, self.y))
 
-    def move(self, player_x, player_y):
+    def is_location_free(self, x, y, otherrect):
+
+        # check for collision
+        if pygame.Rect.colliderect(
+            pygame.Rect(x, y, self.width, self.height), otherrect
+        ):
+            return False
+        return True
+
+    def move(self, player_x, player_y, car_rect):
         self.y -= SCREEN_SPEED
         self.rect = pygame.Rect(self.x, self.y, self.width, self.height)
 
         # go in the direction of the player randomly
 
         if self.y > player_y and random.randint(1, 5) == 1:
-            self.y -= 3
+
+            if self.is_location_free(self.x, self.y - 3, car_rect):
+                self.y -= 3
         elif self.y < player_y and random.randint(1, 5) == 1:
-            self.y += 3
+            if self.is_location_free(self.x, self.y + 3, car_rect):
+                self.y += 3
 
         if self.x > player_x and random.randint(1, 5) == 1:
-            self.x -= 3
+            if self.is_location_free(self.x - 3, self.y, car_rect):
+                self.x -= 3
         elif self.x < player_x and random.randint(1, 5) == 1:
-            self.x += 5
+            if self.is_location_free(self.x + 3, self.y, car_rect):
+                self.x += 3
 
     def is_offscreen(self):
         return self.y < 0 - self.height  # check if offscreen
@@ -541,7 +555,7 @@ def game():
         player.move(pygame.key.get_pressed(), car.rect)
 
         for spider in spiders:
-            spider.move(player.x, player.y)
+            spider.move(player.x, player.y, car.rect)
 
             if spider.collide(player.rect):  # check for colliosn with player
                 spider.y = HEIGHT + 200
