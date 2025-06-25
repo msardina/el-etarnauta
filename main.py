@@ -54,6 +54,7 @@ title_img = pygame.image.load(ASSETS_IMG / "title.png")
 arrow_img = pygame.image.load(ASSETS_IMG / "arrow.png")
 gun_selection = pygame.image.load(ASSETS_IMG / "gun.png")
 locked_gun_selection = pygame.image.load(ASSETS_IMG / "locked.png")
+car_img = pygame.image.load(ASSETS_IMG / "car1.png")
 
 # load snow asses
 for img in range(1, 6):
@@ -153,23 +154,37 @@ class Player:
         if shoulddraw:
             SCREEN.blit(self.img, (self.x, self.y))
 
-    def move(self, keys):
+    def is_location_free(self, x, y, otherrect):
+
+        # check for collision
+        if pygame.Rect.colliderect(
+            pygame.Rect(x, y, self.width, self.height), otherrect
+        ):
+            return False
+        return True
+
+    def move(self, keys, car_rect):
         # move player with keys
         if keys[pygame.K_RIGHT]:
             if self.x < WIDTH - self.width:
-                self.x += self.speed
+                if self.is_location_free(self.x + self.speed, self.y, car_rect):
+                    self.x += self.speed
 
         if keys[pygame.K_LEFT]:
             if self.x > 0:
-                self.x -= self.speed
+
+                if self.is_location_free(self.x - self.speed, self.y, car_rect):
+                    self.x -= self.speed
 
         if keys[pygame.K_DOWN]:
             if self.y < HEIGHT - self.height:
-                self.y += self.speed
+                if self.is_location_free(self.x, self.y + self.speed, car_rect):
+                    self.y += self.speed
 
         if keys[pygame.K_UP]:
             if self.y > 0:
-                self.y -= self.speed
+                if self.is_location_free(self.x, self.y - self.speed, car_rect):
+                    self.y -= self.speed
         else:
             if self.y > 0:
                 self.y -= SCREEN_SPEED
@@ -259,6 +274,29 @@ class Ground_Decoration:
                     self.rect = pygame.Rect(self.x, self.y, self.width, self.height)
 
 
+class Car:
+
+    def __init__(self, x, y, img):
+        self.x = x
+        self.y = y
+        self.img = img
+        self.width = self.img.get_width()
+        self.height = self.img.get_height()
+        self.rect = pygame.Rect(self.x, self.y, self.width, self.height)
+
+    def draw(self):
+        SCREEN.blit(self.img, (self.x, self.y))
+
+    def move(self):
+        self.y -= SCREEN_SPEED
+
+        if self.y < 0 - self.height:
+            self.y = HEIGHT + 200
+            self.x = random.randint(0, WIDTH - self.width)
+
+        self.rect = pygame.Rect(self.x, self.y, self.width, self.height)  # update rect
+
+
 def create_decorations():
     decorations = []
 
@@ -284,7 +322,7 @@ def title():
     arrow_pressed_down = False
     intro_x = 0
     gun_selection_on = False
-    gun_selection_no = 0
+    gun_selection_no = 1
     gun_selection_current_img = gun_selection
     gun_selection_changing = False
 
@@ -409,6 +447,7 @@ def game():
     player_last_hit = 0
     stage = 1
     difficulty = 700
+    game_timer = 0
 
     # create objects
     player = Player(WIDTH // 2, HEIGHT // 2, juan_img)
@@ -424,8 +463,8 @@ def game():
         80,
         heart_img,
     )
+    car = Car(random.randint(0, WIDTH), HEIGHT - 200, car_img)
 
-    game_timer = 0
     heart.play()
 
     # main loop
@@ -448,6 +487,7 @@ def game():
 
         train.draw()
         train2.draw()
+        car.draw()
 
         for decoration in decorations:
             if decoration.y + decoration.height > player.y + player.height:
@@ -498,7 +538,7 @@ def game():
             blood_timer = 0
 
         # move
-        player.move(pygame.key.get_pressed())
+        player.move(pygame.key.get_pressed(), car.rect)
 
         for spider in spiders:
             spider.move(player.x, player.y)
@@ -513,6 +553,7 @@ def game():
 
         train.move(0, False, train.rect, train2.rect)
         train2.move(0, False, train.rect, train2.rect)
+        car.move()
 
         # check if spider off screen
 
