@@ -462,6 +462,8 @@ def game():
     stage = 1
     difficulty = 700
     game_timer = 0
+    global SCREEN_SPEED
+    SCREEN_SPEED = 1
 
     # create objects
     player = Player(WIDTH // 2, HEIGHT // 2, juan_img)
@@ -577,10 +579,9 @@ def game():
                 spider.x = random.randint(0, WIDTH)
 
         # add spiders
-
         if random.randint(1, difficulty) == 1:
             spiders.append(
-                Bug(random.randint(0, WIDTH), HEIGHT, bug_img, blood_bug_img)
+                Bug(random.randint(0, WIDTH), HEIGHT + 200, bug_img, blood_bug_img)
             )
 
         #### draw score ####
@@ -674,8 +675,15 @@ def game():
 
             time.sleep(2)
             score = 0
-            difficulty -= 100
+
+            if difficulty > 100:
+                difficulty -= 100
+
+            if difficulty - 100 < 100:
+                difficulty = 1
+                print("difficulty ramped")
             stage += 1
+            SCREEN_SPEED += 0.5
 
         # update
         pygame.display.update()
