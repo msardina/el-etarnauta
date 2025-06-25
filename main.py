@@ -276,6 +276,9 @@ def title():
     arrow_pressed_down = False
     intro_x = 0
 
+    # make screen black
+    SCREEN.fill("black")
+
     # play lightsaber sound
     intro_sfx.play()
 
