@@ -52,6 +52,7 @@ train_tracks = pygame.image.load(ASSETS_IMG / "train.png")
 end = pygame.image.load(ASSETS_IMG / "deathscreen.png")
 title_img = pygame.image.load(ASSETS_IMG / "title.png")
 arrow_img = pygame.image.load(ASSETS_IMG / "arrow.png")
+gun_selection = pygame.image.load(ASSETS_IMG / "gun.png")
 
 # load snow asses
 for img in range(1, 6):
@@ -281,6 +282,7 @@ def title():
     arrow_pressed_up = False
     arrow_pressed_down = False
     intro_x = 0
+    gun_selection_on = False
 
     # make screen black
     SCREEN.fill(BLACK)
@@ -302,7 +304,7 @@ def title():
                 quit()
 
         # draw
-
+        SCREEN.fill(BLACK)
         SCREEN.blit(title_img, (WIDTH // 2 - title_img.get_width() // 2, 0))
         SCREEN.blit(arrow_img, (345, arrow_y))
         pygame.draw.rect(SCREEN, (0, 0, 0), (intro_x, 0, WIDTH, 300))
@@ -340,9 +342,21 @@ def title():
                 title = False
                 begin_sfx.play()
 
+            elif arrow_y == 375 + 32:
+                gun_selection_on = True
+                begin_sfx.play()
+
+        if gun_selection_on and keys[pygame.K_z]:
+            gun_selection_on = False
+
         # move rect
         if intro_x < WIDTH:
             intro_x += 7
+
+        # draw gun selection
+
+        if gun_selection_on:
+            SCREEN.blit(gun_selection, (WIDTH // 2 - gun_selection.get_width() // 2, 0))
 
         # update
         pygame.display.update()
