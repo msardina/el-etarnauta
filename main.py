@@ -350,6 +350,8 @@ def title():
                 gun_selection_on = True
                 begin_sfx.play()
 
+        ##### GUN SELECTION ######
+
         if gun_selection_on:
             if keys[pygame.K_z]:
                 gun_selection_on = False
