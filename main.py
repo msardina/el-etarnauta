@@ -29,6 +29,9 @@ font = pygame.font.SysFont("freesansbold", 50)
 title_font = pygame.font.SysFont(None, 100)
 medium_font = pygame.font.SysFont(None, 75)
 
+# gun
+chosen_gun = "shotgun"
+
 # const
 SCREEN_SPEED = 1
 SCORE_PER_LEVEL = 300
@@ -37,6 +40,8 @@ SCALE_DECORATION_NUM = 3
 # music
 heart = pygame.mixer.Sound(ASSETS_SFX / "heartbeat.wav")
 shot_gun = pygame.mixer.Sound(ASSETS_SFX / "gun.wav")
+pistol_sfx = pygame.mixer.Sound(ASSETS_SFX / "pistol.wav")
+
 stage_pass = pygame.mixer.Sound(ASSETS_SFX / "record.wav")
 death_sfx = pygame.mixer.Sound(ASSETS_SFX / "death.mp3")
 begin_sfx = pygame.mixer.Sound(ASSETS_SFX / "hover.wav")
@@ -52,9 +57,10 @@ train_tracks = pygame.image.load(ASSETS_IMG / "train.png")
 end = pygame.image.load(ASSETS_IMG / "deathscreen.png")
 title_img = pygame.image.load(ASSETS_IMG / "title.png")
 arrow_img = pygame.image.load(ASSETS_IMG / "arrow.png")
-gun_selection = pygame.image.load(ASSETS_IMG / "gun.png")
+gun_selection = pygame.image.load(ASSETS_IMG / "shotgun.png")
 locked_gun_selection = pygame.image.load(ASSETS_IMG / "locked.png")
 car_img = pygame.image.load(ASSETS_IMG / "car1.png")
+pistol_gun_selection = pygame.image.load(ASSETS_IMG / "pistol.png")
 
 # load snow asses
 for img in range(1, 6):
@@ -208,7 +214,6 @@ class Player:
 
     def is_fire(self, keys):
         if keys[pygame.K_SPACE] and not self.is_firing:  # fire shot
-            shot_gun.play()
             self.is_firing = True
             self.speed = 1
 
@@ -339,6 +344,8 @@ def title():
     gun_selection_no = 1
     gun_selection_current_img = gun_selection
     gun_selection_changing = False
+    global chosen_gun
+    chosen_gun = "shotgun"
 
     # make screen black
     SCREEN.fill(BLACK)
@@ -413,7 +420,7 @@ def title():
                 gun_selection_no += 1
                 begin_sfx.play()
                 gun_selection_changing = True
-                if gun_selection_no > 1:
+                if gun_selection_no > 2:
                     gun_selection_no = 0
 
             elif keys[pygame.K_LEFT] and not gun_selection_changing:
@@ -422,15 +429,20 @@ def title():
                 begin_sfx.play()
 
                 if gun_selection_no < 0:
-                    gun_selection_no = 1
+                    gun_selection_no = 2
 
             if not keys[pygame.K_RIGHT] and not keys[pygame.K_LEFT]:
                 gun_selection_changing = False
 
         if gun_selection_no == 1:
             gun_selection_current_img = gun_selection
-        else:
+            chosen_gun = "shotgun"
+        elif gun_selection_no == 0:
             gun_selection_current_img = locked_gun_selection
+            chosen_gun = "shotgun"
+        else:
+            gun_selection_current_img = pistol_gun_selection
+            chosen_gun = "pistol"
 
         # move rect
         if intro_x < WIDTH:
@@ -464,6 +476,8 @@ def game():
     game_timer = 0
     global SCREEN_SPEED
     SCREEN_SPEED = 1
+    global chosen_gun
+    print(chosen_gun)
 
     # create objects
     player = Player(WIDTH // 2, HEIGHT // 2, juan_img)
@@ -525,6 +539,11 @@ def game():
             bullets.append(
                 Bullet(player.x + player.width // 2 - 6, player.y + player.height)
             )
+
+            if chosen_gun == "shotgun":
+                shot_gun.play()
+            if chosen_gun == "pistol":
+                pistol_sfx.play()
 
         # move bullets
 
