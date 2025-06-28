@@ -293,6 +293,35 @@ class Ground_Decoration:
                     self.rect = pygame.Rect(self.x, self.y, self.width, self.height)
 
 
+class Collectable_Life:
+
+    def __init__(self, x, y, img):
+        self.img = img
+        self.width = self.img.get_width()
+        self.height = self.img.get_height()
+        self.x = x
+        self.y = y
+        self.rect = pygame.Rect(self.x, self.y, self.width, self.height)
+
+    def draw(self):
+        SCREEN.blit(self.img, (self.x, self.y))
+
+    def reset(self):
+        self.x = random.randint(0, WIDTH - self.width)
+        self.y = HEIGHT * 3
+
+    def move(self):
+        self.y -= SCREEN_SPEED
+
+        if self.y < 0:
+            self.reset()
+
+        self.rect = pygame.Rect(self.x, self.y, self.width, self.height)  # update rect
+
+    def is_collected(self, player_rect):
+        return pygame.Rect.colliderect(self.rect, player_rect)
+
+
 class Car:
 
     def __init__(self, x, y, img):
@@ -477,7 +506,6 @@ def game():
     global SCREEN_SPEED
     SCREEN_SPEED = 1
     global chosen_gun
-    print(chosen_gun)
 
     # create objects
     player = Player(WIDTH // 2, HEIGHT // 2, juan_img)
@@ -494,7 +522,7 @@ def game():
         heart_img,
     )
     car = Car(random.randint(0, WIDTH), HEIGHT - 200, car_img)
-
+    collect_heart = Collectable_Life(random.randint(0, WIDTH), HEIGHT * 3, heart_img)
     heart.play()
 
     # main loop
@@ -518,6 +546,7 @@ def game():
         train.draw()
         train2.draw()
         car.draw()
+        collect_heart.draw()
 
         for decoration in decorations:
             if decoration.y + decoration.height > player.y + player.height:
@@ -589,6 +618,13 @@ def game():
         train.move(0, False, train.rect, train2.rect)
         train2.move(0, False, train.rect, train2.rect)
         car.move()
+        collect_heart.move()
+
+        # add hearts
+
+        if collect_heart.is_collected(player.rect):
+            collect_heart.reset()
+            player.lives += 1
 
         # check if spider off screen
 
