@@ -60,6 +60,9 @@ arrow_img = pygame.image.load(ASSETS_IMG / "arrow.png")
 gun_selection = pygame.image.load(ASSETS_IMG / "shotgun.png")
 locked_gun_selection = pygame.image.load(ASSETS_IMG / "locked.png")
 car_img = pygame.image.load(ASSETS_IMG / "car1.png")
+car_img2 = pygame.image.load(ASSETS_IMG / "car2.png")
+car_img3 = pygame.image.load(ASSETS_IMG / "car3.png")
+car_imgs = [car_img, car_img2, car_img3]
 pistol_gun_selection = pygame.image.load(ASSETS_IMG / "pistol.png")
 
 # load snow asses
@@ -324,10 +327,11 @@ class Collectable_Life:
 
 class Car:
 
-    def __init__(self, x, y, img):
+    def __init__(self, x, y, imgs):
         self.x = x
         self.y = y
-        self.img = img
+        self.imgs = imgs
+        self.img = self.imgs[random.randint(0, 2)]
         self.width = self.img.get_width()
         self.height = self.img.get_height()
         self.rect = pygame.Rect(self.x, self.y, self.width, self.height)
@@ -341,6 +345,9 @@ class Car:
         if self.y < 0 - self.height:
             self.y = HEIGHT + 200
             self.x = random.randint(0, WIDTH - self.width)
+            self.img = self.imgs[random.randint(0, 2)]
+            self.width = self.img.get_width()
+            self.height = self.img.get_height()
 
         self.rect = pygame.Rect(self.x, self.y, self.width, self.height)  # update rect
 
@@ -521,7 +528,7 @@ def game():
         80,
         heart_img,
     )
-    car = Car(random.randint(0, WIDTH), HEIGHT - 200, car_img)
+    car = Car(random.randint(0, WIDTH), HEIGHT - 200, car_imgs)
     collect_heart = Collectable_Life(random.randint(0, WIDTH), HEIGHT * 3, heart_img)
     heart.play()
 
