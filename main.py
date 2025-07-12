@@ -51,6 +51,7 @@ intro_sfx = pygame.mixer.Sound(ASSETS_SFX / "lightsaber.mp3")
 juan_img = pygame.image.load(ASSETS_IMG / f"juan.png")
 bug_img = pygame.image.load(ASSETS_IMG / f"spider.png")
 blood_bug_img = pygame.image.load(ASSETS_IMG / f"blood spider.png")
+explosion_img = pygame.image.load(ASSETS_IMG / f"explosion.png")
 heart_img = pygame.image.load(ASSETS_IMG / f"life.png")
 ground_decorations = []
 train_tracks = pygame.image.load(ASSETS_IMG / "train.png")
@@ -146,15 +147,18 @@ class Bug:
     def is_offscreen(self):
         return self.y < 0 - self.height  # check if offscreen
 
+    def reset(self):
+        self.x = random.randint(0, WIDTH)
+        self.y = HEIGHT + 200
+        self.rect = pygame.Rect(self.x, self.y, self.width, self.height)
+        self.lives = 5
+
     def hit(self):
         self.lives -= 1
         self.img = self.bloodimg
 
         if self.lives == 0:  # check if spider is dead
-            self.x = random.randint(0, WIDTH)
-            self.y = HEIGHT + 200
-            self.rect = pygame.Rect(self.x, self.y, self.width, self.height)
-            self.lives = 5
+            self.reset()
 
     def collide(self, playerrect):
         return pygame.Rect.colliderect(self.rect, playerrect)  # collision detection
@@ -214,6 +218,9 @@ class Player:
 
         # update rect
         self.rect = pygame.Rect(self.x, self.y, self.width, self.height)
+
+    def shoot_grenade(self, keys):
+        return keys[pygame.K_z]
 
     def is_fire(self, keys):
         if keys[pygame.K_SPACE] and not self.is_firing:  # fire shot
@@ -531,6 +538,9 @@ def game():
     car = Car(random.randint(0, WIDTH), HEIGHT - 200, car_imgs)
     collect_heart = Collectable_Life(random.randint(0, WIDTH), HEIGHT * 3, heart_img)
     heart.play()
+    grenade_y = HEIGHT
+    grenade_on = False
+    mirror = False
 
     # main loop
     while run:
@@ -599,6 +609,19 @@ def game():
                     elif bullet.is_offscreen():
                         if bullet in bullets:
                             bullets.remove(bullet)
+
+        # check for grenades
+
+        if player.shoot_grenade(pygame.key.get_pressed()):
+            for spider in spiders:
+                spider.reset()
+                SCREEN.blit(
+                    explosion_img,
+                    (
+                        WIDTH // 2 - explosion_img.get_width() // 2,
+                        HEIGHT // 2 - explosion_img.get_height() // 2,
+                    ),
+                )
 
         # update blood timer
         blood_timer += 0.20
