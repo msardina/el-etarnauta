@@ -36,19 +36,22 @@ chosen_gun = "shotgun"
 SCREEN_SPEED = 1
 SCORE_PER_LEVEL = 300
 SCALE_DECORATION_NUM = 3
+GRAVITY = 0.6
 
 # music
 heart = pygame.mixer.Sound(ASSETS_SFX / "heartbeat.wav")
 shot_gun = pygame.mixer.Sound(ASSETS_SFX / "gun.wav")
 pistol_sfx = pygame.mixer.Sound(ASSETS_SFX / "pistol.wav")
-
 stage_pass = pygame.mixer.Sound(ASSETS_SFX / "record.wav")
 death_sfx = pygame.mixer.Sound(ASSETS_SFX / "death.mp3")
 begin_sfx = pygame.mixer.Sound(ASSETS_SFX / "hover.wav")
 intro_sfx = pygame.mixer.Sound(ASSETS_SFX / "lightsaber.mp3")
+boom_sfx = pygame.mixer.Sound(ASSETS_SFX / "boom.wav")
 
 # images
 juan_img = pygame.image.load(ASSETS_IMG / f"juan.png")
+fire_img = pygame.image.load(ASSETS_IMG / f"fire.png")
+grenade_img = pygame.image.load(ASSETS_IMG / "grenade.png")
 bug_img = pygame.image.load(ASSETS_IMG / f"spider.png")
 blood_bug_img = pygame.image.load(ASSETS_IMG / f"blood spider.png")
 explosion_img = pygame.image.load(ASSETS_IMG / f"explosion.png")
@@ -236,6 +239,41 @@ class Player:
             self.speed = 3
             self.is_firing = False
         return False
+
+
+class Grenade:
+    def __init__(self, x, y, img):
+        self.x = x
+        self.y = y
+        self.img = img
+        self.dy = 0
+        self.shotat = 0
+
+    def draw(self, grenade_on):
+        SCREEN.blit(self.img, (self.x, self.y))
+
+        if not grenade_on:
+            self.x = WIDTH
+            self.y = HEIGHT
+
+    def is_thrown(self, keys, playerx):
+
+        if keys[pygame.K_z]:
+            self.dy = 15
+            self.shotat = playerx
+            return True
+        return False
+
+    def throw_grenade(self):
+
+        if self.shotat > WIDTH // 2:
+            self.x -= 5
+        if self.shotat < WIDTH // 2:
+            self.x += 5
+
+        self.y -= self.dy
+
+        self.dy -= GRAVITY
 
 
 class Bullet:
@@ -517,14 +555,19 @@ def game():
     stage = 1
     difficulty = 700
     game_timer = 0
+    grenade_timer = 0
     global SCREEN_SPEED
     SCREEN_SPEED = 1
     global chosen_gun
+    grenade_on = False
+    boom = False
+    boom_timer = 0
 
     # create objects
     player = Player(WIDTH // 2, HEIGHT // 2, juan_img)
     decorations = create_decorations()
     bullets = []
+    grenade = Grenade(WIDTH, HEIGHT, grenade_img)
     spiders = [Bug(random.randint(0, WIDTH), HEIGHT, bug_img, blood_bug_img)]
     train = Ground_Decoration(100, 0, train_tracks)
     train2 = Ground_Decoration(100, HEIGHT, train_tracks)
@@ -538,9 +581,6 @@ def game():
     car = Car(random.randint(0, WIDTH), HEIGHT - 200, car_imgs)
     collect_heart = Collectable_Life(random.randint(0, WIDTH), HEIGHT * 3, heart_img)
     heart.play()
-    grenade_y = HEIGHT
-    grenade_on = False
-    mirror = False
 
     # main loop
     while run:
@@ -564,6 +604,7 @@ def game():
         train2.draw()
         car.draw()
         collect_heart.draw()
+        grenade.draw(grenade_on)
 
         for decoration in decorations:
             if decoration.y + decoration.height > player.y + player.height:
@@ -591,6 +632,46 @@ def game():
             if chosen_gun == "pistol":
                 pistol_sfx.play()
 
+        # grenade animation
+
+        if grenade_on:
+            grenade.throw_grenade()
+
+        # change grenade_on
+
+        if grenade.is_thrown(pygame.key.get_pressed(), player.x):
+            grenade_on = True
+            grenade.x = player.x
+            grenade.y = player.y
+
+        if grenade_on:
+            grenade_timer += 0.016
+
+        if grenade_on == True and grenade_timer > 0.8:
+            grenade_on = False
+            grenade_timer = 0
+            boom_sfx.play()
+            boom = True
+
+        if boom_timer > 0.2:
+            boom = False
+            boom_timer = 0
+
+        if boom:
+            boom_timer += 0.016
+
+        if boom:
+            SCREEN.blit(
+                fire_img,
+                (
+                    WIDTH // 2 - fire_img.get_width() // 2,
+                    HEIGHT // 2 - fire_img.get_height() // 2,
+                ),
+            )
+
+            for spider in spiders:
+                spider.reset()
+
         # move bullets
 
         if len(bullets) > 0:
@@ -609,19 +690,6 @@ def game():
                     elif bullet.is_offscreen():
                         if bullet in bullets:
                             bullets.remove(bullet)
-
-        # check for grenades
-
-        if player.shoot_grenade(pygame.key.get_pressed()):
-            for spider in spiders:
-                spider.reset()
-                SCREEN.blit(
-                    explosion_img,
-                    (
-                        WIDTH // 2 - explosion_img.get_width() // 2,
-                        HEIGHT // 2 - explosion_img.get_height() // 2,
-                    ),
-                )
 
         # update blood timer
         blood_timer += 0.20
