@@ -780,7 +780,7 @@ def game():
 
 # run then game
 
-if __name__ == "__main__":
+if __name__ == "__main__":  # only run on main
 
     while True:
         title()
