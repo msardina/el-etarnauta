@@ -562,6 +562,7 @@ def game():
     grenade_on = False
     boom = False
     boom_timer = 0
+    grenades_left = 3
 
     # create objects
     player = Player(WIDTH // 2, HEIGHT // 2, juan_img)
@@ -639,7 +640,7 @@ def game():
 
         # change grenade_on
 
-        if grenade.is_thrown(pygame.key.get_pressed(), player.x):
+        if grenade.is_thrown(pygame.key.get_pressed(), player.x) and grenades_left > 0:
             grenade_on = True
             grenade.x = player.x
             grenade.y = player.y
@@ -652,6 +653,7 @@ def game():
             grenade_timer = 0
             boom_sfx.play()
             boom = True
+            grenades_left -= 1
 
         if boom_timer > 0.2:
             boom = False
@@ -741,9 +743,11 @@ def game():
 
         # render text
         score_txt = title_font.render(f"{score}", True, BLACK)
+        grenades_txt = font.render(f"Grenades: {grenades_left}", True, BLACK)
 
         # draw score
         SCREEN.blit(score_txt, (WIDTH // 2 - score_txt.get_width() // 2, 20))
+        SCREEN.blit(grenades_txt, (10, HEIGHT - (grenades_txt.get_height() + 10)))
 
         # check for game ending
 
